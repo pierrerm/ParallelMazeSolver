@@ -101,7 +101,7 @@ int main()
 		// Array of points to be visited at each iteration, initialized with all Point(-1,-1) entries
 		Point points[N];
 		// Set first point to be visited - the arrival point (because we are backtracking), the last point of the maze (assuming square maze)
-		points[0] = Point(sqrt(size), sqrt(size));
+		points[0] = Point(sqrt(size) - 1, sqrt(size) - 1);
 		
 		/* Point* failedPoints;
 		cudaMallocManaged((void**)& failedPoints, N * N * sizeof(Point)); */
