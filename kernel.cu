@@ -16,33 +16,33 @@ __global__ void checkPoint(Point* d_points, Point* d_new_points, bool* maze, uns
 
 	for (int index = (blockIdx.x * nb_threads + threadIdx.x); index < N; index += nb_threads) {
 
-		// If Point is empty (ie, still at initial Point(-1,-1) value), do nothing
-		if (d_points[index].getR() < 0) return;
+		// If Point is empty (ie, still at initial Point(-1,-1) value), skip process but still copy back results
+		if (d_points[index].getR() >= 0) {
+			// Get row and col for current point
+			int row = d_points[index].getR();
+			int col = d_points[index].getC();
 
-		// Get row and col for current point
-		int row = d_points[index].getR();
-		int col = d_points[index].getC();
-
-		// If point above is in bounds and not a wall
-		if (row - 1 > 0 && maze[(row - 1) * N + col]) {
-			// Insert in shared array and get insertion index
-			int i = insertPoint(new_points, Point((row - 1), col));
-			// If successfully inserted, print details
-			if (i != -1) {
-				printf("Point %d, r: %d, c: %d\n", i, (row - 1), col);
-			}
-		}
-
-		// Synchronize threads before checkoint points to the left
-		__syncthreads();
-
-		// If point to the left is in bounds and not a wall
-		if (col - 1 > 0 && maze[row * N + (col - 1)]) {
-			// Insert in shared array and get insertion index
-			int i = insertPoint(new_points, Point(row, (col - 1)));
-			if (i != -1) {
+			// If point above is in bounds and not a wall
+			if (row - 1 > 0 && maze[(row - 1) * N + col]) {
+				// Insert in shared array and get insertion index
+				int i = insertPoint(new_points, Point((row - 1), col));
 				// If successfully inserted, print details
-				printf("Point %d, r: %d, c: %d\n", i, row, (col-1));
+				if (i != -1) {
+					printf("Point %d, r: %d, c: %d\n", i, (row - 1), col);
+				}
+			}
+
+			// Synchronize threads before checkpoint points to the left
+			__syncthreads();
+
+			// If point to the left is in bounds and not a wall
+			if (col - 1 > 0 && maze[row * N + (col - 1)]) {
+				// Insert in shared array and get insertion index
+				int i = insertPoint(new_points, Point(row, (col - 1)));
+				if (i != -1) {
+					// If successfully inserted, print details
+					printf("Point %d, r: %d, c: %d\n", i, row, (col-1));
+				}
 			}
 		}
 
@@ -55,17 +55,17 @@ __global__ void checkPoint(Point* d_points, Point* d_new_points, bool* maze, uns
 // insert given point at the first available position in the given array (avoiding duplicate points)
 __device__ int insertPoint(Point array[N], Point point) {
 	int i;
-	// cycle through array points until the end or an empty point (ie, still at initial Point(-1,-1) value) is reached
+	// Cycle through array points until the end or an empty point (ie, still at initial Point(-1,-1) value) is reached
 	for (i = 0; i < (sizeof(array) / sizeof(array[0])) && array[i].getR() >= 0; i++) {
 		// if duplicate point found (ie, point we want to insert is already in the array) do nothing and return
 		if (point.getR() == array[i].getR() && point.getC() == array[i].getC()) return -1;
 	}
-	// if empty point has been found (and we are not at the end of the array), insert point and return insertion index
+	// If empty point has been found (and we are not at the end of the array), insert point and return insertion index
 	if (i < (sizeof(array) / sizeof(array[0]))) {
 		array[i] = point;
 		return i;
 	}
-	// if array end is reached, do nothing and return
+	// If array end is reached, do nothing and return
 	return -1;
 }
 
@@ -142,7 +142,7 @@ int main()
 
 	printf("counter: %d\n", counter);
 
-	// With up-left moves only, the path to the end will be exactly 2N - 2 iterations/points long
+	// With up and left moves only, the path to the end will be exactly 2N - 2 iterations/points long
 	if (counter == (2*N - 2)) printf("Path found!\n");
 	else printf("Path not found!\n");
 
