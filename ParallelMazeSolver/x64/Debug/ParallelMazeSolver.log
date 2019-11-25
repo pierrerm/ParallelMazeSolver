@@ -1,0 +1,36 @@
+﻿  Compiling CUDA source file kernel.cu...
+  
+  C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\bin\nvcc.exe" -gencode=arch=compute_35,code=\"sm_35,compute_35\" --use-local-env -ccbin "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\bin\HostX86\x64" -x cu  -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\include"  -G   --keep-dir x64\Debug -maxrregcount=0  --machine 64 --compile -cudart static  -g   -DWIN32 -DWIN64 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Fdx64\Debug\vc142.pdb /FS /Zi /RTC1 /MDd " -o x64\Debug\kernel.cu.obj "C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\kernel.cu" 
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(26): warning : address of a host variable "std::cout" cannot be directly taken in a device function
+  
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(27): warning : address of a host variable "std::cout" cannot be directly taken in a device function
+  
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(26): warning : calling a __host__ function from a __host__ __device__ function is not allowed
+  
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(26): warning : calling a __host__ function from a __host__ __device__ function is not allowed
+  
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(27): warning : calling a __host__ function from a __host__ __device__ function is not allowed
+  
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(27): warning : calling a __host__ function from a __host__ __device__ function is not allowed
+  
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(92): warning : non-POD class type passed through ellipsis
+  
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(116): warning : non-POD class type passed through ellipsis
+  
+C:/Users/prober15/source/repos/pierrerm/ParallelMazeSolver/kernel.cu(18): warning : dynamic initialization is not supported for a function-scope static __shared__ variable within a __device__/__global__ function
+  
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(89): warning : calling a __host__ function("exit") from a __host__ __device__ function("push") is not allowed
+  
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(103): warning : calling a __host__ function("exit") from a __host__ __device__ function("peek") is not allowed
+  
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(113): warning : calling a __host__ function("exit") from a __host__ __device__ function("pop") is not allowed
+  
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(92): warning : non-POD class type passed through ellipsis
+  
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(116): warning : non-POD class type passed through ellipsis
+  
+  kernel.cu
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(92): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'Point'
+C:\Users\prober15\source\repos\pierrerm\ParallelMazeSolver\main.h(116): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'Point'
+C:/Users/prober15/source/repos/pierrerm/ParallelMazeSolver/kernel.cu(280): warning C4244: '=': conversion from 'time_t' to 'double', possible loss of data
+  ParallelMazeSolver.vcxproj -> C:\Users\prober15\Source\Repos\pierrerm\ParallelMazeSolver\x64\Debug\ParallelMazeSolver.exe
