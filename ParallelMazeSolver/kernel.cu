@@ -7,12 +7,14 @@
 #include "main.h"
 #include "lodepng.h"
 // For an M (rows) by N (columns) maze
-# define M 20
-# define N 20
+# define M 199
+# define N 199
+
+void postProcessing(char* inputImage);
 
 __device__ bool insertPoint(Point array[2 * (N < M ? N : M)], Point point);
 
-__global__ void checkPoint(Point* d_points, Point* d_new_points, unsigned char* image, unsigned nb_threads, unsigned int* index) //bool* maze
+__global__ void checkPoint(Point* d_points, Point* d_new_points, unsigned char* image, unsigned nb_threads, int* insert_index, int run_num) //bool* maze
 {
 	// shared array to hold resulting new points to visit for next iteration
 	__shared__ Point new_points[2 * (N < M ? N : M)];
@@ -36,9 +38,8 @@ __global__ void checkPoint(Point* d_points, Point* d_new_points, unsigned char* 
 				//printf("Point above: x: %d, y: %d, value: %d\n", (row-1), col, maze[(row - 1) * N + col]);
 				// Insert in shared array and get insertion index
 				if (insertPoint(new_points, Point((row - 1), col))) {
-					//new_points[atomicInc((unsigned int *)insertIndex[0], N * M)] = Point((row - 1), col);
-					printf("ye %d\n", atomicAdd((unsigned int*)index, 1));
-					image[(row - 1) * 4 * N + col * 4] = 255;
+					new_points[atomicAdd(&insert_index[0], 1)] = Point((row - 1), col);
+					image[(row - 1) * 4 * N + col * 4] = 255 - run_num;
 					image[(row - 1) * 4 * N + col * 4 + 1] = 0;
 					image[(row - 1) * 4 * N + col * 4 + 2] = 0;
 				}
@@ -60,9 +61,8 @@ __global__ void checkPoint(Point* d_points, Point* d_new_points, unsigned char* 
 				//printf("Point to the left: x: %d, y: %d, value: %d\n", row, (col - 1), maze[row * N + (col - 1)]);
 				// Insert in shared array and get insertion index
 				if (insertPoint(new_points, Point(row, (col - 1)))) {
-					//new_points[atomicInc((unsigned int*)insertIndex[0], N * M)] = Point(row, (col - 1));
-					printf("ye %d\n", atomicAdd((unsigned int*)index, 1));
-					image[row * 4 * N + (col - 1) * 4] = 255;
+					new_points[atomicAdd(&insert_index[0], 1)] = Point(row, (col - 1));
+					image[row * 4 * N + (col - 1) * 4] = 255 - run_num;
 					image[row * 4 * N + (col - 1) * 4 + 1] = 0;
 					image[row * 4 * N + (col - 1) * 4 + 2] = 0;
 				}
@@ -86,9 +86,8 @@ __global__ void checkPoint(Point* d_points, Point* d_new_points, unsigned char* 
 				//printf("Point above: x: %d, y: %d, value: %d\n", (row-1), col, maze[(row - 1) * N + col]);
 				// Insert in shared array and get insertion index
 				if (insertPoint(new_points, Point((row + 1), col))) {
-					//new_points[atomicInc((unsigned int*)insertIndex[0], N * M)] = Point((row + 1), col);
-					printf("ye %d\n", atomicAdd((unsigned int*)index, 1));
-					image[(row + 1) * 4 * N + col * 4] = 255;
+					new_points[atomicAdd(&insert_index[0], 1)] = Point((row + 1), col);
+					image[(row + 1) * 4 * N + col * 4] = 255 - run_num;
 					image[(row + 1) * 4 * N + col * 4 + 1] = 0;
 					image[(row + 1) * 4 * N + col * 4 + 2] = 0;
 				}
@@ -113,9 +112,8 @@ __global__ void checkPoint(Point* d_points, Point* d_new_points, unsigned char* 
 				//printf("Point to the left: x: %d, y: %d, value: %d\n", row, (col - 1), maze[row * N + (col - 1)]);
 				// Insert in shared array and get insertion index
 				if (insertPoint(new_points, Point(row, (col + 1)))) {
-					//new_points[atomicInc((unsigned int*)insertIndex[0], N * M)] = Point(row, (col + 1));
-					printf("ye %d\n", atomicAdd((unsigned int*)index, 1));
-					image[row * 4 * N + (col + 1) * 4] = 255;
+					new_points[atomicAdd(&insert_index[0], 1)] = Point(row, (col + 1));
+					image[row * 4 * N + (col + 1) * 4] = 255 - run_num;
 					image[row * 4 * N + (col + 1) * 4 + 1] = 0;
 					image[row * 4 * N + (col + 1) * 4 + 2] = 0;
 				}
@@ -136,7 +134,7 @@ __global__ void checkPoint(Point* d_points, Point* d_new_points, unsigned char* 
 		__syncthreads();
 		d_new_points[index] = new_points[index];
 		d_new_points[index + (N < M ? N : M)] = new_points[index + (N < M ? N : M)];
-		printf("index: %d, row: %d\n", index, d_new_points[index].getR());
+		//printf("index: %d, row: %d\n", index, d_new_points[index].getR());
 		//printf("index: %d, point: x:%d, y:%d\n", index, new_points[index].getR(), new_points[index].getC());
 	}
 }
@@ -161,6 +159,12 @@ __device__ bool insertPoint(Point array[2 * (N < M ? N : M)], Point point) {
 	// If array end is reached, do nothing and return
 	//printf("end of array reached\n");*/
 	return false;
+}
+
+__global__  void testAdd(int* a)
+{
+	int b = atomicAdd(&a[0], 1);
+	printf("%d\n", b);
 }
 
 int main(int argc, char* argv[])
@@ -235,6 +239,12 @@ int main(int argc, char* argv[])
 		cudaMallocManaged((void**)& d_points, diagonalSize * sizeof(Point));
 		cudaMallocManaged((void**)& d_new_points, diagonalSize * sizeof(Point));
 
+		int* d_data;
+		cudaMalloc((void**)& d_data, 1 * sizeof(int));
+		cudaMemset(d_data, 0, 1 * sizeof(int));
+
+		int run_num = 0;
+
 		// While there are still points to visit
 		while (points[0].getR() != -1) {
 
@@ -248,11 +258,10 @@ int main(int argc, char* argv[])
 
 			ftime(&cuda_start);
 
-			unsigned int* d_index = 0;
-			cudaMalloc((void**)& d_index, sizeof(unsigned int));
+			cudaMemset(d_data, 0, 1 * sizeof(int));
 
 			// Call to device function with N threads (at most N points), points to be visited, and array to hold resulting new points to visit for next iteration
-			checkPoint << <nb_blocks, nb_threads >> > (d_points, d_new_points, image_copy, nb_threads, d_index); //d_maze
+			checkPoint << <nb_blocks, nb_threads >> > (d_points, d_new_points, image_copy, nb_threads, d_data, run_num); //d_maze
 
 			cudaDeviceSynchronize();
 
@@ -262,6 +271,9 @@ int main(int argc, char* argv[])
 
 			// Copy the resulting new points to visit for next iteration into the points to be visited array
 			cudaMemcpy(&points, d_new_points, diagonalSize * sizeof(Point), cudaMemcpyDeviceToHost);
+
+			run_num++;
+			if (run_num % 150 == 0) run_num = 0;
 		}
 
 		lodepng_encode32_file("solvedMaze.png", image_copy, image_width, image_height);
@@ -281,6 +293,19 @@ int main(int argc, char* argv[])
 
 	printf("Total execution time: %d, Parallel execution time: %d", (int)total_time, (int)cuda_total);
 
+	postProcessing("solvedMaze.png");
+
 	return 0;
+}
+
+void postProcessing(char* inputImage) {
+	unsigned error;
+	unsigned char* image, * image_copy;
+	unsigned image_width, image_height;
+
+	error = lodepng_decode32_file(&image, &image_width, &image_height, inputImage);
+	if (error) printf("error %u: %s\n", error, lodepng_error_text(error));
+
+
 }
 
