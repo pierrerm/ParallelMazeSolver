@@ -16,8 +16,8 @@ The full report can be found [here](https://github.com/pierrerm/ParallelMazeSolv
 #### 1001x1001 maze
 
 ## Authors:  
-   Stefano Commodari 260742659
-   Anudruth Manjunath 260710646
-   Pierre Robert-Michon 260712449
-   Romain Couperier 260724748
+   Stefano Commodari 260742659 <br>
+   Anudruth Manjunath 260710646 <br>
+   Pierre Robert-Michon 260712449 <br>
+   Romain Couperier 260724748 <br>
 
