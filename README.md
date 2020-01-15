@@ -11,17 +11,14 @@ The full report can be found [here](https://github.com/pierrerm/ParallelMazeSolv
 
 #### 101x101 maze
 
-![alt text](https://github.com/pierrerm/ParallelMazeSolver/blob/master/Maze/maze101_inv.png "Logo Title Text 1")
 ![alt text](https://github.com/pierrerm/ParallelMazeSolver/blob/master/Maze/maze101_p.png "Logo Title Text 1")
 
 #### 401x401 maze
 
-![alt text](https://github.com/pierrerm/ParallelMazeSolver/blob/master/Maze/maze401_inv.png "Logo Title Text 1")
 ![alt text](https://github.com/pierrerm/ParallelMazeSolver/blob/master/Maze/maze401_p.png "Logo Title Text 1")
 
 #### 1001x1001 maze
 
-![alt text](https://github.com/pierrerm/ParallelMazeSolver/blob/master/Maze/maze1001_inv.png "Logo Title Text 1")
 ![alt text](https://github.com/pierrerm/ParallelMazeSolver/blob/master/Maze/maze1001_p.png "Logo Title Text 1")
 
 ## Authors:  
