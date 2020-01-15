@@ -9,17 +9,21 @@ The full report can be found [here](https://github.com/pierrerm/ParallelMazeSolv
 
 ## Results:
 
+#### Speedup
+
+![alt text](https://github.com/pierrerm/ParallelMazeSolver/blob/master/Maze/speedup.png "speedup")
+
 #### 101x101 maze
 
-![alt text](https://github.com/pierrerm/ParallelMazeSolver/blob/master/Maze/maze101_p.png "Logo Title Text 1")
+![alt text](https://github.com/pierrerm/ParallelMazeSolver/blob/master/Maze/maze101_p.png "101 maze")
 
 #### 401x401 maze
 
-![alt text](https://github.com/pierrerm/ParallelMazeSolver/blob/master/Maze/maze401_p.png "Logo Title Text 1")
+![alt text](https://github.com/pierrerm/ParallelMazeSolver/blob/master/Maze/maze401_p.png "401 maze")
 
 #### 1001x1001 maze
 
-![alt text](https://github.com/pierrerm/ParallelMazeSolver/blob/master/Maze/maze1001_p.png "Logo Title Text 1")
+![alt text](https://github.com/pierrerm/ParallelMazeSolver/blob/master/Maze/maze1001_p.png "1001 maze")
 
 ## Authors:  
    Stefano Commodari 260742659 <br>
